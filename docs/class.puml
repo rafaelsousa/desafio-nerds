@@ -1,0 +1,34 @@
+@startuml
+title DCP - Cahier des charges\n MOA : <b>obde</b> / MOE : <b>teamflat</b>
+left to right direction
+skinparam shadowing false
+
+class "Person" as Person {
+    personId : UUID
+    name : String
+    email : String
+    birthDate : Date
+}
+
+class "Address" as Address {
+    addressId : UUID
+    type: String
+    address : String
+    number : String
+    suite : String
+    state : String
+    country : String
+    zipCode : String
+}
+
+class "Telephone" as Telephone {
+    phoneId : UUID
+    number: String
+    type : String
+}
+
+Person "1" -- "1..*" Address
+Person "1" -- "1..*" Telephone
+
+
+@enduml

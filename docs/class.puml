@@ -1,5 +1,5 @@
 @startuml
-title DCP - Cahier des charges\n MOA : <b>obde</b> / MOE : <b>teamflat</b>
+title Diagrama de classes : Desafio Nerds
 left to right direction
 skinparam shadowing false
 

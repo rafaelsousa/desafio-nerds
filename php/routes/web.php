@@ -16,3 +16,9 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('person', [ 'uses' => 'PersonController@index']);
+$router->get('person/{id}', [ 'uses' => 'PersonController@show']);
+$router->post('person', [ 'uses' => 'PersonController@store']);
+$router->put('person/{id}', [ 'uses' => 'PersonController@update']);
+$router->delete('person/{id}', [ 'uses' => 'PersonController@destroy']);

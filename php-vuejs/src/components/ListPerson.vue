@@ -13,6 +13,9 @@
         <td>{{ person.email }}</td>
         <td>{{ person.birthday }}</td>
       </tr>
+      <tr v-if="list.data.length == 0">
+        <td colspan="3" align="center">Nenhum registro encontrado</td>
+      </tr>
     </table>
   </div>
 </template>

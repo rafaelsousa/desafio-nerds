@@ -16,7 +16,8 @@ services:
       context: ./docker/php
     volumes:
       - ./php:/var/www
-    user: 1000:1000
+    depends_on:
+      - pgsql
     environment:
       DB_CONNECTION: pgsql
       DB_HOST: pgsql
@@ -30,11 +31,10 @@ services:
       context: ./docker/vuejs
     ports:
       - '8081:8080'
+    depends_on:
+      - fpm
     volumes:
-      - ./php-vuejs:/srv/app
-    working_dir: /srv/app
-    command: 'npm run serve'
-    user: 1000:1000
+      - ./php-vuejs:/app
     environment:
       VUE_APP_API_URL: http://localhost:8080/
 

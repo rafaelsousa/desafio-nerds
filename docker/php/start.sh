@@ -14,6 +14,7 @@ fi
 
 mv $PHP_INI_DIR/php.ini-$ENVIRONMENT $PHP_INI_DIR/php.ini
 
+sleep 5
 php artisan migrate --force
 
 php-fpm

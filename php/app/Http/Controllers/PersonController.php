@@ -43,10 +43,9 @@ class PersonController extends Controller
         ]);
 
         $person = Person::findOrFail($id);
-
         $person->update($request->all());
 
-        return response()->json(null);
+        return response()->json($person);
     }
 
     public function destroy($id)

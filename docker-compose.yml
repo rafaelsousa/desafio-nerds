@@ -1,25 +1,75 @@
-# Use postgres/example user/password credentials
-version: '3.1'
-
+version: "3.9"
 services:
 
-  postgres:
-    container_name: postgres
-    image: docker.io/bitnami/postgresql:11
+  web-php:
+    image: nginx
     ports:
-      - '5432:5432'
+      - "8080:80"
+    depends_on:
+      - fpm
     volumes:
-      - postgresql_data:/bitnami/postgresql
+      - ./php:/var/www
+      - ./docker/php/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  fpm:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./php:/var/www
+    user: 1000:1000
     environment:
-      - ALLOW_EMPTY_PASSWORD=no
-      - POSTGRESQL_USERNAME=desafio
-      - POSTGRESQL_PASSWORD=desafio
-      - POSTGRESQL_DATABASE=db_desafio
-    networks:
-      - desafio_network
-networks:
-  desafio_network:
+      DB_CONNECTION: pgsql
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_DATABASE: desafio
+      DB_USERNAME: desafio
+      DB_PASSWORD: desafio
+
+  vue-php:
+    build:
+      context: ./docker/vuejs
+    ports:
+      - '8081:8080'
+    volumes:
+      - ./php-vuejs:/srv/app
+    working_dir: /srv/app
+    command: 'npm run serve'
+    user: 1000:1000
+    environment:
+      VUE_APP_API_URL: http://localhost:8080/
+
+  pgsql:
+    image: postgres
+    ports:
+      - 15432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: desafio
+      POSTGRES_DB: desafio
+      POSTGRES_USER: desafio
+      PGDATA: /var/lib/postgresql/data
+
+  master:
+    build:
+      context: ./docker/locust
+    ports:
+      - "8089:8089"
+    depends_on:
+      - web-php
+    volumes:
+      - ./docker/locust/locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py --master
+
+  worker:
+    build:
+      context: ./docker/locust
+    volumes:
+      - ./docker/locust/locustfile.py:/mnt/locust/locustfile.py
+    depends_on:
+      - web-php
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
 
 volumes:
-  postgresql_data:
-  pgadmin:
+  pgdata:
+    driver: "local"

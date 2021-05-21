@@ -14,4 +14,6 @@ fi
 
 mv $PHP_INI_DIR/php.ini-$ENVIRONMENT $PHP_INI_DIR/php.ini
 
+php artisan migrate --force
+
 php-fpm

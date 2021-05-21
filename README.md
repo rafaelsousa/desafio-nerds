@@ -1,15 +1,23 @@
-# desafio
-A performance comparison between a PHP and Java applications
+# Desafio
+A performance comparison between a PHP(Lumen) and Java(Quarkus) applications
 
-
-# To start the containers :
-
-    docker-compose up -d 
-
-# to start PHP project
+# To start project
 
 ```bash
 git clone https://github.com/robersonfaria/desafio-nerds.git
-cd php
+cd desafio-nerds
 docker-compose up -d 
 ```
+
+# URLS
+ - API PHP - http://localhost:8080
+ - VueJs PHP - http://localhost:8081
+ - Locust - http://localhost:8089
+
+# Database Access
+Postgres
+ - Host: localhost
+ - Port: 15432
+ - User: desafio
+ - Password: desafio
+ - Database: desafio

@@ -11,23 +11,12 @@ services:
     volumes:
       - postgresql_data:/bitnami/postgresql
     environment:
-      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - ALLOW_EMPTY_PASSWORD=no
+      - POSTGRESQL_USERNAME=desafio
+      - POSTGRESQL_PASSWORD=desafio
+      - POSTGRESQL_DATABASE=db_desafio
     networks:
       - desafio_network
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - desafio_network
-    restart: unless-stopped
 networks:
   desafio_network:
 

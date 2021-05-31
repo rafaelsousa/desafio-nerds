@@ -18,19 +18,19 @@ public class AddressRepository {
     EntityManager entityManager;
 
     public Address findById(Long id) {
-        return entityManager.find(Address.class,id);
+        return entityManager.find(Address.class, id);
     }
 
 
     public Uni<Address> persist(Address address) {
         return mutinySession.persist(address)
                 .chain(mutinySession::flush)
-                .onItem().transform(ignore->address);
+                .onItem().transform(ignore -> address);
     }
 
 
     public Boolean delete(Long id) {
-        entityManager.remove(entityManager.find(Address.class,id));
+        entityManager.remove(entityManager.find(Address.class, id));
         return Boolean.TRUE;
     }
 

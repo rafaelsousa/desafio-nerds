@@ -18,19 +18,19 @@ public class TelephoneRepository {
     EntityManager entityManager;
 
     public Telephone findById(Long id) {
-        return entityManager.find(Telephone.class,id);
+        return entityManager.find(Telephone.class, id);
     }
 
 
     public Uni<Telephone> persist(Telephone telephone) {
         return mutinySession.persist(telephone)
                 .chain(mutinySession::flush)
-                .onItem().transform(ignore->telephone);
+                .onItem().transform(ignore -> telephone);
     }
 
 
     public Boolean delete(Long id) {
-        entityManager.remove(entityManager.find(Telephone.class,id));
+        entityManager.remove(entityManager.find(Telephone.class, id));
         return Boolean.TRUE;
     }
 

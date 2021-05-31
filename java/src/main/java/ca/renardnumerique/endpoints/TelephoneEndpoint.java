@@ -25,10 +25,9 @@ public class TelephoneEndpoint {
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Uni<Telephone> get(@PathParam("id") Long id){
+    public Uni<Telephone> get(@PathParam("id") Long id) {
         return Uni.createFrom().item(repository.findById(id));
     }
-
 
 
     @POST
@@ -63,6 +62,6 @@ public class TelephoneEndpoint {
         return Uni.createFrom()
                 .item(repository.delete(id))
                 .onItem()
-                .transform(x -> Boolean.TRUE.equals(x)? Response.status(200).build() : Response.notModified().build());
+                .transform(x -> Boolean.TRUE.equals(x) ? Response.status(200).build() : Response.notModified().build());
     }
 }

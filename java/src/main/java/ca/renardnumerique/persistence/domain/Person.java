@@ -3,7 +3,6 @@ package ca.renardnumerique.persistence.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.time.LocalDate;
@@ -26,14 +25,11 @@ public class Person {
 
     @OneToMany(mappedBy = "person")
     private Set<Telephone> telephones;
-
+    private LocalDate birthDate;
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
-    private LocalDate birthDate;
-
 
     public Long getPersonId() {
         return personId;

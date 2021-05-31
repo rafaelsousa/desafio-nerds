@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import java.util.Objects;
-import java.util.UUID;
 
 
 @Entity
@@ -35,7 +34,7 @@ public class Address {
     private String zipCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="personId")
+    @JoinColumn(name = "personId")
     private Person person;
 
     public Person getPerson() {

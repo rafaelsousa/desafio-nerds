@@ -3,9 +3,12 @@ package ca.renardnumerique.persistence.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -17,6 +20,12 @@ public class Person {
     private Long personId;
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "person")
+    private Set<Address> addresses;
+
+    @OneToMany(mappedBy = "person")
+    private Set<Telephone> telephones;
 
 
     public void setBirthDate(LocalDate birthDate) {

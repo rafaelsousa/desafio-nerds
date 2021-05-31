@@ -16,7 +16,7 @@ public class Address {
 
 
     @Id
-    @SequenceGenerator(name = "personSeq", sequenceName = "addressSeq_id_seq", allocationSize = 1, initialValue = 1)
+    @SequenceGenerator(name = "addressSeq", sequenceName = "addressSeq_id_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(generator = "addressSeq")
     private Long addressId;
 

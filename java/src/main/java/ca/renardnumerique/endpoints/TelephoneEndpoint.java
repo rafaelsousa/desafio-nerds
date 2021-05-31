@@ -1,6 +1,7 @@
-package ca.renardnumerique;
+package ca.renardnumerique.endpoints;
 
-import ca.renardnumerique.persistence.domain.Person;
+import ca.renardnumerique.persistence.domain.Telephone;
+import ca.renardnumerique.persistence.repository.TelephoneRepository;
 import io.smallrye.mutiny.Uni;
 
 import javax.inject.Inject;
@@ -15,16 +16,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/person")
-public class PersonEndpoint {
+@Path("/telephone")
+public class TelephoneEndpoint {
 
     @Inject
-    PersonRepository repository;
+    TelephoneRepository repository;
 
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Uni<Person> get(@PathParam("id") Long id){
+    public Uni<Telephone> get(@PathParam("id") Long id){
         return Uni.createFrom().item(repository.findById(id));
     }
 
@@ -33,15 +34,15 @@ public class PersonEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> add(Person person) {
+    public Uni<Response> add(Telephone telephone) {
         return repository
-                .persist(person)
+                .persist(telephone)
                 .onItem()
                 .transform(this::generatePersistResponse);
     }
 
-    private Response generatePersistResponse(Person person) {
-        return Response.ok(person).build();
+    private Response generatePersistResponse(Telephone telephone) {
+        return Response.ok(telephone).build();
     }
 
 
@@ -49,9 +50,9 @@ public class PersonEndpoint {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> update(Person person) {
+    public Uni<Response> update(Telephone telephone) {
         return repository
-                .persist(person)
+                .persist(telephone)
                 .onItem()
                 .transform(this::generatePersistResponse);
     }

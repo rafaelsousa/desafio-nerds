@@ -1,4 +1,4 @@
-package ca.renardnumerique;
+package ca.renardnumerique.persistence.repository;
 
 import ca.renardnumerique.persistence.domain.Person;
 import io.smallrye.mutiny.Uni;

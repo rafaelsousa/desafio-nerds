@@ -1,67 +1,72 @@
 package ca.renardnumerique.endpoints;
 
 import ca.renardnumerique.persistence.domain.Address;
-import ca.renardnumerique.persistence.repository.AddressRepository;
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Uni;
+import org.jboss.resteasy.reactive.RestPath;
+import org.modelmapper.ModelMapper;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
+
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.*;
+
 
 @Path("/address")
 public class AddressEndpoint {
 
-    @Inject
-    AddressRepository repository;
+
+    @GET
+    public Uni<List<Address>> get(){
+        return Address.listAll();
+    }
 
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public Uni<Address> get(@PathParam("id") Long id) {
-        return Uni.createFrom().item(repository.findById(id));
+    public Uni<Address> getSingle(@RestPath("id") Long id) {
+        return Address.findById(id);
     }
 
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> add(Address address) {
-        return repository
-                .persist(address)
-                .onItem()
-                .transform(this::generatePersistResponse);
-    }
+        if(address!=null){
+            throw new WebApplicationException("Entity was null", 422);
 
-    private Response generatePersistResponse(Address address) {
-        return Response.ok(address).build();
+        }
+        return Panache.withTransaction(address::persist)
+                .replaceWith(
+                        Response.ok().status(CREATED)::build
+                );
     }
-
 
     @PUT
-    @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> update(Address address) {
-        return repository
-                .persist(address)
-                .onItem()
-                .transform(this::generatePersistResponse);
+    public Uni<Response> update(@RestPath Long id, Address addressSrc) {
+        if (addressSrc == null || addressSrc.addressId == null) {
+            throw new WebApplicationException("Address id was not set on request.", 422);
+        }
+        return Panache
+                .withTransaction(() -> Address.<Address> findById(addressSrc.addressId)
+                    .onItem().ifNotNull().invoke((addressDest) -> {
+                        var mapper = new ModelMapper();
+                        mapper.map(addressSrc,addressDest);
+                    })
+                )
+                .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
+                .onItem().ifNull().continueWith(Response.ok().status(NOT_FOUND)::build);
     }
 
     @DELETE
     @Path("{id}")
-    public Uni<Response> delete(@PathParam("id") Long id) {
-        return Uni.createFrom()
-                .item(repository.delete(id))
-                .onItem()
-                .transform(x -> Boolean.TRUE.equals(x) ? Response.status(200).build() : Response.notModified().build());
+    @ReactiveTransactional
+    public Uni<Response> delete(@RestPath("id") Long id) {
+        return Panache.withTransaction(() -> Address.deleteById(id))
+                .map(deleted -> deleted
+                        ? Response.ok().status(NO_CONTENT).build()
+                        : Response.ok().status(NOT_FOUND).build());
+
     }
 }

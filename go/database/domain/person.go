@@ -1,7 +1,10 @@
 package domain
 
+import "github.com/jackc/pgtype"
+
 type Person struct {
-	personId int64
-	name     string
-	email    string
+	PersonId  int64       `db:"personid"`
+	BirthDate pgtype.Date `db:"birthdate"`
+	Email     string      `db:"email"`
+	Name      string      `db:"name"`
 }

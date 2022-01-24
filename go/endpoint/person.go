@@ -2,20 +2,20 @@ package endpoint
 
 import (
 	"encoding/json"
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/rafaelsousa/desafionerds/database/repository"
 	"net/http"
 )
 
 type PersonService struct {
-	databaseConnection *sqlx.DB
-	endpoints          []Endpoint
+	databaseConnectionPool *pgxpool.Pool
+	endpoints              []Endpoint
 }
 
-func NewPersonService(db *sqlx.DB) PersonService {
+func NewPersonService(db *pgxpool.Pool) PersonService {
 	p := PersonService{
-		databaseConnection: db,
-		endpoints:          make([]Endpoint, 0),
+		databaseConnectionPool: db,
+		endpoints:              make([]Endpoint, 0),
 	}
 	endpoints := Endpoint{
 		route:   "/listAllPeople",
@@ -32,9 +32,11 @@ func (p PersonService) GetEndpoints() []Endpoint {
 }
 
 func (p PersonService) listAll(writer http.ResponseWriter, request *http.Request) {
-	people, err := repository.ListAllPeople(p.databaseConnection)
+	people, err := repository.ListAllPeople(p.databaseConnectionPool)
 	if err != nil {
 		json.NewEncoder(writer).Encode(err)
+	} else {
+		json.NewEncoder(writer).Encode(people)
 	}
-	json.NewEncoder(writer).Encode(people)
+
 }

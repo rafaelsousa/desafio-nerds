@@ -2,7 +2,7 @@ package endpoint
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"net/http"
 )
 
@@ -11,7 +11,7 @@ type Endpoint struct {
 	handler func(w http.ResponseWriter, r *http.Request)
 }
 
-func RegisterEndpoints(db *sqlx.DB) {
+func CreateRouter(db *pgxpool.Pool) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	endpoints := make([]Endpoint, 0)
@@ -21,4 +21,5 @@ func RegisterEndpoints(db *sqlx.DB) {
 	for _, e := range endpoints {
 		router.HandleFunc(e.route, e.handler).Methods("GET", "POST", "PUT", "DELETE")
 	}
+	return router
 }

@@ -1,16 +1,19 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
+	"context"
+	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/rafaelsousa/desafionerds/database/domain"
 )
 
-func ListAllPeople(db *sqlx.DB) ([]domain.Person, error) {
+func ListAllPeople(pool *pgxpool.Pool) ([]domain.Person, error) {
 
-	var people []domain.Person
-	err := db.Select(&people, "")
+	people := make([]domain.Person, 0)
+	err := pgxscan.Select(context.Background(), pool, &people, "select * from Person")
 	if err != nil {
 		return nil, err
 	}
+
 	return people, nil
 }
